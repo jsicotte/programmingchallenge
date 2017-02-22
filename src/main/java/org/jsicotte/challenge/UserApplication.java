@@ -20,7 +20,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import redis.clients.jedis.Jedis;
 
 /**
- * Created by jsicotte on 2/20/17.
+ * Entrypoint into the application.
  */
 public class UserApplication extends Application<AppConfiguration> {
     private static final User DEFAULT_ADMIN_USER = new User("jsicotte","password");
@@ -35,25 +35,19 @@ public class UserApplication extends Application<AppConfiguration> {
 
     @Override
     public void initialize(Bootstrap<AppConfiguration> bootstrap) {
-        // nothing to do yet
     }
 
     @Override
-    public void run(AppConfiguration configuration,
-                    Environment environment) {
-        /*
-        In memory data storage for testing
-         */
-        // UserDao userDao = new InMemoryUserDao();
-        // TokenDao tokenDao = new InMemoryTokenDao();
+    public void run(AppConfiguration configuration, Environment environment) {
+
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setUrl("jdbc:sqlite:/Users/jsicotte/Documents/workspaces/programmingtest2/user");
+        dataSource.setUrl(configuration.getSqliteUrl());
         UserDao userDao = new JdbcUserDao(dataSource);
 
         // always make sure the admin account is there
         userDao.saveUser(DEFAULT_ADMIN_USER);
 
-        Jedis jedis = new Jedis("localhost");
+        Jedis jedis = new Jedis(configuration.getRedisHost());
         TokenDao tokenDao = new RedisTokenDao(jedis);
 
         AuthResource authResource = new AuthResource(userDao, tokenDao);
@@ -66,8 +60,9 @@ public class UserApplication extends Application<AppConfiguration> {
         environment.jersey().register(new AuthDynamicFeature(
                 new TokenAuthFilter.Builder()
                         .setAuthenticator(tokenAuthenticator)
-                        .setPrefix("Bearer")
+                        .setPrefix("CUSTOM_TOKEN")
                         .buildAuthFilter()));
+
         environment.jersey().register(RolesAllowedDynamicFeature.class);
     }
 }

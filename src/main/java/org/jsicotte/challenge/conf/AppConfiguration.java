@@ -4,7 +4,25 @@ package org.jsicotte.challenge.conf;
 import io.dropwizard.Configuration;
 
 /**
- * Created by jsicotte on 2/20/17.
+ * App configuration
  */
 public class AppConfiguration extends Configuration {
+    private String sqliteUrl = "jdbc:sqlite:/Users/jsicotte/Documents/workspaces/programmingtest2/user";
+    private String redisHost = "localhost";
+
+    public String getSqliteUrl() {
+        return sqliteUrl;
+    }
+
+    public void setSqliteUrl(String sqliteUrl) {
+        this.sqliteUrl = sqliteUrl;
+    }
+
+    public String getRedisHost() {
+        return redisHost;
+    }
+
+    public void setRedisHost(String redisHost) {
+        this.redisHost = redisHost;
+    }
 }
