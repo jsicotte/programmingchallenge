@@ -19,6 +19,8 @@ import org.jsicotte.challenge.resources.UserResource;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import redis.clients.jedis.Jedis;
 
+import java.time.Duration;
+
 /**
  * Entrypoint into the application.
  */
@@ -39,6 +41,7 @@ public class UserApplication extends Application<AppConfiguration> {
 
     @Override
     public void run(AppConfiguration configuration, Environment environment) {
+        Duration tokenAge = configuration.getTokenAge();
 
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setUrl(configuration.getSqliteUrl());
@@ -50,7 +53,7 @@ public class UserApplication extends Application<AppConfiguration> {
         Jedis jedis = new Jedis(configuration.getRedisHost());
         TokenDao tokenDao = new RedisTokenDao(jedis);
 
-        AuthResource authResource = new AuthResource(userDao, tokenDao);
+        AuthResource authResource = new AuthResource(userDao, tokenDao, tokenAge);
         TokenAuthenticator tokenAuthenticator = new TokenAuthenticator(tokenDao, userDao);
         UserResource userResource = new UserResource(userDao);
 

@@ -22,10 +22,12 @@ import java.util.UUID;
 public class AuthResource {
     private UserDao userDao;
     private TokenDao tokenDao;
+    private Duration tokenAge;
 
-    public AuthResource(UserDao userDao, TokenDao tokenDao) {
+    public AuthResource(UserDao userDao, TokenDao tokenDao, Duration tokenAge) {
         this.userDao = userDao;
         this.tokenDao = tokenDao;
+        this.tokenAge = tokenAge;
     }
 
     @POST
@@ -34,7 +36,7 @@ public class AuthResource {
         User user = userDao.findUserByNameAndPassword(username, password);
 
         String tokenString = UUID.randomUUID().toString();
-        Instant expirationInstant = Instant.now().plus(Duration.ofSeconds(1200));
+        Instant expirationInstant = Instant.now().plus(tokenAge);
         Token token = new Token(tokenString, user.getUsername(), expirationInstant);
 
         tokenDao.saveToken(token);
