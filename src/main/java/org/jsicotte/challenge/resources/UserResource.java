@@ -1,9 +1,10 @@
 package org.jsicotte.challenge.resources;
 
-import io.dropwizard.auth.Auth;
 import org.jsicotte.challenge.core.User;
 import org.jsicotte.challenge.core.dao.UserDao;
 
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
@@ -21,12 +22,14 @@ public class UserResource {
     }
 
     @POST
+    @PermitAll
     public void addUser(User user) {
         userDao.saveUser(user);
     }
 
     @PUT
-    public void updateUser(@Auth User user) {
+    @RolesAllowed({"USER"})
+    public void updateUser(User user) {
         User fetchedUser = userDao.findUserByName(user.getUsername());
 
         fetchedUser.setJson(user.getJson());
@@ -35,7 +38,8 @@ public class UserResource {
     }
 
     @DELETE
-    public void removeUser(@Auth User user, String username) {
+    @RolesAllowed({"USER"})
+    public void removeUser(@QueryParam("username") String username) {
         userDao.removeUserByUsername(username);
     }
 }

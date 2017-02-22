@@ -3,7 +3,7 @@ package org.jsicotte.challenge.core.dao;
 import org.jsicotte.challenge.core.User;
 
 /**
- * Created by jsicotte on 2/21/17.
+ * DAO Interface for user management
  */
 public interface UserDao {
     User findUserByNameAndPassword(String username, String password);

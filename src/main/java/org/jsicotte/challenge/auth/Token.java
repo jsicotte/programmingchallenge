@@ -3,7 +3,7 @@ package org.jsicotte.challenge.auth;
 import java.time.Instant;
 
 /**
- * Created by jsicotte on 2/21/17.
+ * Security token. The tokenString field is the value to be passed to some API calls.
  */
 public class Token {
     private String tokenString;
@@ -11,7 +11,6 @@ public class Token {
     private Instant expires;
 
     public Token() {}
-
 
     public Token(String tokenString, String username, Instant expires) {
         this.tokenString = tokenString;

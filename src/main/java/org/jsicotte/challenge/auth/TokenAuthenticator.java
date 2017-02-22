@@ -10,7 +10,7 @@ import java.time.Instant;
 import java.util.Optional;
 
 /**
- * Created by jsicotte on 2/20/17.
+ * Authenticator for a string token.
  */
 public class TokenAuthenticator implements Authenticator<String, User> {
     private TokenDao tokenDao;
@@ -23,6 +23,10 @@ public class TokenAuthenticator implements Authenticator<String, User> {
 
     @Override
     public Optional<User> authenticate(String tokenString) throws AuthenticationException {
+        if(tokenString == null) {
+            return Optional.empty();
+        }
+
         Token token = tokenDao.getToken(tokenString);
         if(token == null) {
             return Optional.empty();
@@ -31,11 +35,17 @@ public class TokenAuthenticator implements Authenticator<String, User> {
         Instant expires = token.getExpires();
         Instant now = Instant.now();
 
+        /*
+        Though expiration may be handled by the underlying storage mechanism (for example Redis), perform this check
+        anyway. Should the underlying data store change, expiration will be unaffected.
+         */
         if(expires.isBefore(now)) {
             return Optional.empty();
         }
 
+        // Find the user and mark them as Role.USER since they are known to the system
         User user = userDao.findUserByName(token.getUsername());
+        user.setRole(Role.USER);
 
         return Optional.of(user);
     }

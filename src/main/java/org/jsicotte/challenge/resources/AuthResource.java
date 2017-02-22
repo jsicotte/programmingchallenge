@@ -5,6 +5,8 @@ import org.jsicotte.challenge.core.dao.TokenDao;
 import org.jsicotte.challenge.core.User;
 import org.jsicotte.challenge.core.dao.UserDao;
 
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.time.Duration;
@@ -27,11 +29,12 @@ public class AuthResource {
     }
 
     @POST
+    @PermitAll
     public Token createToken(@QueryParam("username") String username, @QueryParam("password") String password) {
         User user = userDao.findUserByNameAndPassword(username, password);
 
         String tokenString = UUID.randomUUID().toString();
-        Instant expirationInstant = Instant.now().plus(Duration.ofSeconds(120));
+        Instant expirationInstant = Instant.now().plus(Duration.ofSeconds(1200));
         Token token = new Token(tokenString, user.getUsername(), expirationInstant);
 
         tokenDao.saveToken(token);
@@ -41,6 +44,7 @@ public class AuthResource {
 
 
     @DELETE
+    @RolesAllowed({"USER"})
     public void removeToken(@PathParam("access_token") String accessToken) {
         tokenDao.removeToken(accessToken);
     }

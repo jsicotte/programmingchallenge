@@ -10,7 +10,7 @@ import redis.clients.jedis.Jedis;
 import java.io.IOException;
 
 /**
- * Created by jsicotte on 2/21/17.
+ * Implementation of the TokenDao for Redis
  */
 public class RedisTokenDao implements TokenDao {
     private ObjectMapper mapper = new ObjectMapper();
@@ -38,7 +38,6 @@ public class RedisTokenDao implements TokenDao {
 
     @Override
     public void saveToken(Token token) {
-
 
         String tokenString = token.getTokenString();
         try {

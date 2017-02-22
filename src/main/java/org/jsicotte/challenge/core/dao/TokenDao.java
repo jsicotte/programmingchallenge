@@ -3,7 +3,7 @@ package org.jsicotte.challenge.core.dao;
 import org.jsicotte.challenge.auth.Token;
 
 /**
- * Created by jsicotte on 2/21/17.
+ * DAO Interface for token management
  */
 public interface TokenDao {
     Token getToken(String tokenString);
