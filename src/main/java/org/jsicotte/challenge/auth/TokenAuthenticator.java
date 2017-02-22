@@ -4,6 +4,7 @@ import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.Authenticator;
 import org.jsicotte.challenge.core.User;
 import org.jsicotte.challenge.core.dao.TokenDao;
+import org.jsicotte.challenge.core.dao.UserDao;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -13,9 +14,11 @@ import java.util.Optional;
  */
 public class TokenAuthenticator implements Authenticator<String, User> {
     private TokenDao tokenDao;
+    private UserDao userDao;
 
-    public TokenAuthenticator(TokenDao tokenDao) {
+    public TokenAuthenticator(TokenDao tokenDao, UserDao userDao) {
         this.tokenDao = tokenDao;
+        this.userDao = userDao;
     }
 
     @Override
@@ -32,6 +35,8 @@ public class TokenAuthenticator implements Authenticator<String, User> {
             return Optional.empty();
         }
 
-        return Optional.of(token.getUser());
+        User user = userDao.findUserByName(token.getUsername());
+
+        return Optional.of(user);
     }
 }

@@ -1,7 +1,5 @@
 package org.jsicotte.challenge.auth;
 
-import org.jsicotte.challenge.core.User;
-
 import java.time.Instant;
 
 /**
@@ -9,12 +7,15 @@ import java.time.Instant;
  */
 public class Token {
     private String tokenString;
-    private User user;
+    private String username;
     private Instant expires;
 
-    public Token(String tokenString, User user, Instant expires) {
+    public Token() {}
+
+
+    public Token(String tokenString, String username, Instant expires) {
         this.tokenString = tokenString;
-        this.user = user;
+        this.username = username;
         this.expires = expires;
     }
 
@@ -26,13 +27,6 @@ public class Token {
         this.tokenString = tokenString;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
 
     public Instant getExpires() {
         return expires;
@@ -40,5 +34,13 @@ public class Token {
 
     public void setExpires(Instant expires) {
         this.expires = expires;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

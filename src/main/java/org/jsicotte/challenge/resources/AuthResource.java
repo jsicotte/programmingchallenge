@@ -32,7 +32,7 @@ public class AuthResource {
 
         String tokenString = UUID.randomUUID().toString();
         Instant expirationInstant = Instant.now().plus(Duration.ofSeconds(120));
-        Token token = new Token(tokenString, user, expirationInstant);
+        Token token = new Token(tokenString, user.getUsername(), expirationInstant);
 
         tokenDao.saveToken(token);
 

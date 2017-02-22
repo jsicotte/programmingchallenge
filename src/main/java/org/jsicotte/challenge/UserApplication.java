@@ -40,7 +40,7 @@ public class UserApplication extends Application<AppConfiguration> {
         UserDao userDao = new InMemoryUserDao();
         TokenDao tokenDao = new InMemoryTokenDao();
         AuthResource authResource = new AuthResource(userDao, tokenDao);
-        TokenAuthenticator tokenAuthenticator = new TokenAuthenticator(tokenDao);
+        TokenAuthenticator tokenAuthenticator = new TokenAuthenticator(tokenDao, userDao);
         UserResource userResource = new UserResource(userDao);
 
         environment.jersey().register(new RootResource());
