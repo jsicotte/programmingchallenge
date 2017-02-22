@@ -1,5 +1,6 @@
 package org.jsicotte.challenge.resources;
 
+import io.dropwizard.auth.Auth;
 import org.jsicotte.challenge.core.User;
 import org.jsicotte.challenge.core.dao.UserDao;
 
@@ -25,7 +26,7 @@ public class UserResource {
     }
 
     @PUT
-    public void updateUser(User user) {
+    public void updateUser(@Auth User user) {
         User fetchedUser = userDao.findUserByName(user.getUsername());
 
         fetchedUser.setJson(user.getJson());
@@ -34,7 +35,7 @@ public class UserResource {
     }
 
     @DELETE
-    public void removeUser(String username) {
+    public void removeUser(@Auth User user, String username) {
         userDao.removeUserByUsername(username);
     }
 }

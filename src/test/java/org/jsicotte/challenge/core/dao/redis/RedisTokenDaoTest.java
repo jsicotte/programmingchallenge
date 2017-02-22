@@ -13,10 +13,9 @@ import java.util.UUID;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.is;
 
-/**
- * Created by jsicotte on 2/21/17.
- */
 public class RedisTokenDaoTest {
     private static TokenDao tokenDao;
 
@@ -54,18 +53,17 @@ public class RedisTokenDaoTest {
     }
 
     @Test
-    public void tokenTimeoutTest() {
+    public void tokenTimeoutTest() throws InterruptedException {
         String tokenString = UUID.randomUUID().toString();
-        Token token = new Token(tokenString, "test", Instant.now().plus(Duration.ofMinutes(1L)));
+        Token token = new Token(tokenString, "test", Instant.now().plus(Duration.ofSeconds(5)));
         tokenDao.saveToken(token);
 
         Token persistedToken = tokenDao.getToken(tokenString);
 
-        assertThat(persistedToken.getUsername(), equalTo(token.getUsername()));
-
-        tokenDao.removeToken(tokenString);
+        assertThat(persistedToken, is(notNullValue()));
+        Thread.sleep(5000L);
         persistedToken = tokenDao.getToken(tokenString);
 
-        assertThat(persistedToken, nullValue());
+        assertThat(persistedToken, is(nullValue()));
     }
 }
